@@ -18,6 +18,10 @@ public class ColliderCollisionCheck : MonoBehaviour {
 	{
 		if(GameObject.FindObjectOfType<GlobalScript>().currentWorldState!=state && coll.tag=="Player")
 			GameObject.FindObjectOfType<GlobalScript> ().allowWorldStateShifts.Push(1);
+        else
+        {
+            Debug.Log(coll.name);
+        }
 	}
 
 	void OnTriggerExit2D(Collider2D coll) {

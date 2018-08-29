@@ -10,11 +10,12 @@ public class BoomerangManager : MonoBehaviour
     };
 
     public GameObject BoomerangPrefab = null;
+    public float BoomerangSpeed = 10F;
     private BoomerangDirection direction;
     private GameObject boomerangInstance = null;
     private Vector3 toPosition;
     private Vector3 positionWhileThrowing;
-
+    float delay = 0F;
     // Use this for initialization
     void Start()
     {
@@ -24,8 +25,10 @@ public class BoomerangManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        delay += Time.deltaTime;
+        if (Input.GetMouseButtonDown(0) && boomerangInstance == null)
         {
+            delay = 0F;
             if (boomerangInstance != null)
             {
                 Destroy(boomerangInstance);
@@ -38,9 +41,14 @@ public class BoomerangManager : MonoBehaviour
             toPosition = Camera.main.ScreenToWorldPoint(mousePos);
             toPosition.z = 0;
             positionWhileThrowing = transform.position;
-            Debug.Log(Input.mousePosition);
-            Debug.Log(Camera.main.ScreenToWorldPoint(mousePos));
+            Time.timeScale = 0.5F;
             direction = BoomerangDirection.Front;
+        }
+        else if (Input.GetMouseButtonDown(0) && direction == BoomerangDirection.Front && delay > 0.1F)
+        {
+            Debug.Log("Change Direction");
+            delay = 0F;
+            direction = BoomerangDirection.Back;
         }
         if (boomerangInstance != null)
         {
@@ -53,21 +61,22 @@ public class BoomerangManager : MonoBehaviour
         if ((boomerangInstance.transform.position - toPosition).magnitude > 0.1f && direction == BoomerangDirection.Front)
         {
             var direction = (toPosition - positionWhileThrowing).normalized;
-            boomerangInstance.transform.position = boomerangInstance.transform.position + direction * 5F * Time.deltaTime;
+            boomerangInstance.transform.position = boomerangInstance.transform.position + direction * BoomerangSpeed * Time.deltaTime;
         }
         else
         {
             direction = BoomerangDirection.Back;
-            if(boomerangInstance.transform.position.x - transform.position.x > 0.1f)
+            Time.timeScale = 0.8F;
+            if (boomerangInstance.transform.position.x - transform.position.x > 0.1f)
             {
                 var direction = -(toPosition - positionWhileThrowing).normalized;
-                boomerangInstance.transform.position = boomerangInstance.transform.position + direction * 5F * Time.deltaTime;
+                boomerangInstance.transform.position = boomerangInstance.transform.position + direction * BoomerangSpeed * Time.deltaTime;
             }
             else
             {
+                Time.timeScale = 1F;
                 Destroy(boomerangInstance);
             }
         }
-
     }
 }
