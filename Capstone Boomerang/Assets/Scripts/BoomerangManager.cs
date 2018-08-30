@@ -67,7 +67,7 @@ public class BoomerangManager : MonoBehaviour
         {
             direction = BoomerangDirection.Back;
             Time.timeScale = 0.8F;
-            if (boomerangInstance.transform.position.x - transform.position.x > 0.1f)
+            if (Mathf.Abs(boomerangInstance.transform.position.x - transform.position.x) > 0.1f)
             {
                 var direction = -(toPosition - positionWhileThrowing).normalized;
                 boomerangInstance.transform.position = boomerangInstance.transform.position + direction * BoomerangSpeed * Time.deltaTime;
